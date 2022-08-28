@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Login from './Login'
 
 test('username field should be render', () => { 
@@ -64,5 +64,36 @@ test('username field should be render', () => {
     fireEvent.change(passwordui, {target:{value:testval}});
 
     expect(buttonui).not.toBeDisabled();
+
+ })
+
+ test('loading should be render when u submitted button', () => { 
+    render(<Login />);
+    
+    const usernameui = screen.getByPlaceholderText(/username/i);
+    const passwordui = screen.getByPlaceholderText(/password/i);
+    const buttonui = screen.getByRole('button');
+    const testval= 'test';
+    fireEvent.change(usernameui, {target:{value:testval}});
+    fireEvent.change(passwordui, {target:{value:testval}});
+    fireEvent.click(buttonui);
+    expect(buttonui).toHaveTextContent(/Please wait/i);
+
+ })
+
+ test('loading should not be render after login', async () => { 
+    render(<Login />);
+    
+    const usernameui = screen.getByPlaceholderText(/username/i);
+    const passwordui = screen.getByPlaceholderText(/password/i);
+    const buttonui = screen.getByRole('button');
+    const testval= 'test';
+    fireEvent.change(usernameui, {target:{value:testval}});
+    fireEvent.change(passwordui, {target:{value:testval}});
+    fireEvent.click(buttonui);
+    await waitFor(()=>{
+        expect(buttonui).not.toHaveTextContent(/Please wait/i);
+    })  
+  
 
  })

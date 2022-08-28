@@ -7,25 +7,27 @@ export default function Login() {
     const [username, setUsername]= useState("");
     const [password, setPassword] = useState('');
     const [user, setUser] =useState([]);
+    const [loading, setLoading] = useState(false);
+    
 
     const handelClick = async (e) =>{
          e.preventDefault();
+         setLoading(true);
         try {
-             
-           await axios.get('https://jsonplaceholder.typicode.com/users/1').then((res)=>{
-                setUser(res.data);
-            })
+         const res= await axios.get('https://jsonplaceholder.typicode.com/users/1');
+         setUser(res.data);
 
-        } catch (error) {
+        } catch  {
             setError(true);
         }
-
+      setLoading(false);
     
     }
 
   return (
     <div>
-        <h2>Testing Login components</h2>
+        <h2>Testing Login Components</h2>
+        {user && <p>{user.username} </p>}
         <div className="main">
                  <form>
                      <div className="form-control"> 
@@ -42,10 +44,13 @@ export default function Login() {
                      </div>
 
                      <div className="form-control"> 
-                       <button type="submit" 
+                       <button type="button" 
                        disabled={!username || !password}
-                       onClick={(e)=>handelClick()}
-                       >Submit </button>
+                       onClick={(e)=>handelClick(e)}
+                       >
+                         {loading ? 'please wait...': 'Submit' }
+                           
+                            </button>
                      </div>
 
                  </form>
